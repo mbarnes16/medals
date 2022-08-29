@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Country from './components/Country';
+import NewCountry from './components/NewCountry';
 import './App.css';
 
 class App extends Component {
@@ -14,6 +15,17 @@ class App extends Component {
       { id: 2, name: 'silver' },
       { id: 3, name: 'bronze' },
     ]
+  }
+  handleAdd = (name) => {
+    const { countries } = this.state;
+    const id = countries.length === 0 ? 1 : Math.max(...countries.map(country => country.id)) + 1;
+    const mutableCountries = [...countries].concat({ id: id, name: name, gold: 0, silver: 0, bronze: 0 });
+    this.setState({ countries: mutableCountries });
+  }
+  handleDelete = (countryId) => {
+    const { countries } = this.state;
+    const mutableCountries = [...countries].filter(c => c.id !== countryId);
+    this.setState({ countries: mutableCountries });
   }
   handleIncrement = (countryId, medalName) => {
     const countries = [ ...this.state.countries ];
@@ -47,13 +59,14 @@ class App extends Component {
                 key={ country.id } 
                 country={ country } 
                 medals={ this.state.medals }
+                onDelete={ this.handleDelete }
                 onIncrement={ this.handleIncrement } 
                 onDecrement={ this.handleDecrement } />
             )}
         </div>
+        <NewCountry onAdd={ this.handleAdd } />
       </React.Fragment>
     );
   }
 }
-
 export default App;
